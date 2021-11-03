@@ -1,0 +1,30 @@
+html {
+  font-size: 14px;
+  font-family: 'Open Sans', sans-serif;
+}
+
+h1 {
+  margin: 0;
+  font-size: 34px;
+}
+
+figure,
+div.wrap {
+  float: left;
+}
+
+article {
+  width: 250px;
+}
+
+img {
+  border: 1px solid black;
+}
+
+img:hover {
+  border: 10px solid blue;
+}
+
+.figure-text {
+  text-align: center;
+}
