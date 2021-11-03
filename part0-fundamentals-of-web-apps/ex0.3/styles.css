@@ -1,0 +1,22 @@
+form {
+  margin: auto;
+  width: 500px;
+}
+
+form li + li {
+  margin-top: 1em;
+}
+
+ul {
+  list-style: none;
+}
+
+label {
+  display: inline-block;
+  width: 90px;
+  text-align: right;
+}
+
+#button-box {
+  padding-left: 90px;
+}

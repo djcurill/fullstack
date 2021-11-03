@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>My test page</title>
+    <link href="styles.css" rel="stylesheet" />
+  </head>
+  <body>
+    <form action="/forms-endpoint">
+      <ul>
+        <li>
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="user_name" />
+        </li>
+        <li>
+          <label for="email">Email:</label>
+          <input type="email" id="mail" name="user_email" />
+        </li>
+        <li>
+          <label for="body">Message: </label>
+          <textarea id="msg" name="user_message"></textarea>
+        </li>
+        <li>
+          <div id="button-box">
+            <button type="submit">Send</button>
+            <button type="reset">Reset</button>
+          </div>
+        </li>
+      </ul>
+    </form>
+  </body>
+</html>
