@@ -1,4 +1,4 @@
-# Single Page App Web Sequence Diagram
+# Single Page App Web Sequence Diagram Create New Note
 
 The web sequence diagram for creating a new note using a single page application:
 
