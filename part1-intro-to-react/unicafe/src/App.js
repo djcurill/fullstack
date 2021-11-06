@@ -6,12 +6,13 @@ const Button = (props) => {
   return <button onClick={props.handleClick}>{props.text}</button>;
 };
 
-const StatisticLine = (props) => {
+const TableRow = ({ field, value }) => {
   return (
     <>
-      <li>
-        {props.text} : {props.value}
-      </li>
+      <tr>
+        <td> {field} </td>
+        <td> {value} </td>
+      </tr>
     </>
   );
 };
@@ -20,23 +21,21 @@ const Stats = ({ reviews }) => {
   if (reviews.some((n) => n > 0)) {
     const [good, neutral, bad] = reviews;
     const total = good + neutral + bad;
-    const avg = ((good - bad) / total) * 100;
+    const avg = (good - bad) / total;
     const positiveRate = (good / total) * 100;
 
     return (
       <>
         <h2>Feedback Statistics</h2>
-        <ul>
-          <StatisticLine text="Good" value={good} />
-          <StatisticLine text="Neutral" value={neutral} />
-          <StatisticLine text="Bad" value={bad} />
-          <StatisticLine text="All" value={total} />
-          <StatisticLine text="Average" value={avg.toFixed(1) + '%'} />
-          <StatisticLine
-            text="Positive"
-            value={positiveRate.toFixed(1) + '%'}
-          />
-        </ul>
+        <table>
+          <tbody>
+            <TableRow field="Good" value={good} />
+            <TableRow field="Neutral" value={neutral} />
+            <TableRow field="Bad" value={bad} />
+            <TableRow field="Average" value={avg.toFixed(2)} />
+            <TableRow field="Positive" value={positiveRate.toFixed(1) + '%'} />
+          </tbody>
+        </table>
       </>
     );
   } else {
