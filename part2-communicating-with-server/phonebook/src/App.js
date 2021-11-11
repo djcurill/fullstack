@@ -1,20 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { isSubstring } from './utils';
+import axios from 'axios';
 
 const PhoneNumbers = ({ persons }) => {
   return (
     <ul>
       {persons.map((person) => (
-        <PhoneNumber name={person.name} phoneNumber={person.phoneNumber} />
+        <PhoneNumber
+          key={person.id}
+          name={person.name}
+          number={person.number}
+        />
       ))}
     </ul>
   );
 };
 
-const PhoneNumber = ({ name, phoneNumber }) => {
+const PhoneNumber = ({ id, name, number }) => {
   return (
-    <li key={name}>
-      {' '}
-      {name} : {phoneNumber}{' '}
+    <li>
+      {name} : {number}
     </li>
   );
 };
@@ -47,13 +52,7 @@ const Form = (props) => {
 };
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    {
-      name: 'Daniel Curilla',
-      phoneNumber: '000-000-0000',
-    },
-  ]);
-
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newPhoneNumber, setNewPhoneNumber] = useState('');
   const [searchField, setSearchField] = useState('');
@@ -76,13 +75,20 @@ const App = () => {
       alert(`${newName} is already added to phonebook`);
     else
       setPersons(
-        persons.concat({ name: newName, phoneNumber: newPhoneNumber })
+        persons.concat({
+          name: newName,
+          number: newPhoneNumber,
+          id: persons.length + 1,
+        })
       );
   };
 
-  const isSubstring = (entity, subString) => {
-    return entity.toLowerCase().includes(subString.toLowerCase());
-  };
+  useEffect(() => {
+    axios.get('http://localhost:3001/persons').then((response) => {
+      setPersons(persons.concat(response.data));
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const personsToShow = searchField
     ? persons.filter((person) => isSubstring(person.name, searchField))
