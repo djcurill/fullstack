@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search } from './components/Search';
 import { isSubstring } from './utils';
-import { List } from './components/List';
+import { ListCountries } from './components/List';
 import axios from 'axios';
 import { Country } from './components/Countries';
 
@@ -12,39 +12,61 @@ const App = () => {
 
   const changeSearch = (event) => {
     setSearch(event.target.value);
+    setSpotlight(null);
+  };
+
+  const showCountryDetails = (countryName) => {
+    axios
+      .get(`https://restcountries.com/v3.1/name/${countryName}?fullText=true`)
+      .then((response) => {
+        setSpotlight(response.data[0]);
+      });
   };
 
   useEffect(() => {
     axios.get('https://restcountries.com/v3.1/all').then((response) => {
-      const countryNames = response.data.map((c) => c.name.common);
+      const countryNames = response.data.map((c) => {
+        return {
+          name: c.name.common,
+          showDetails: () => {
+            showCountryDetails(c.name.common);
+          },
+        };
+      });
       setCountries(countries.concat(countryNames));
     });
     // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
-    const filteredCountries = countries.filter((c) => isSubstring(search, c));
-    if (filteredCountries.length === 1) {
-      const name = filteredCountries[0];
+    const res = countries.filter((c) => isSubstring(search, c.name));
+
+    if (res.length === 1) {
+      const country = res[0];
       axios
-        .get(`https://restcountries.com/v3.1/name/${name}?fullText=true`)
+        .get(
+          `https://restcountries.com/v3.1/name/${country.name}?fullText=true`
+        )
         .then((response) => {
           setSpotlight(response.data[0]);
         });
-    } else setSpotlight(null);
+    }
     // eslint-disable-next-line
   }, [search]);
+
+  let showCountries = search
+    ? countries.filter((c) => isSubstring(search, c.name))
+    : countries;
 
   return (
     <div>
       <h1>Search for a Country</h1>
       <div>
         <Search handleChange={changeSearch} />
-        {spotlight !== null ? (
-          <Country country={spotlight} />
-        ) : (
-          <List search={search} values={countries} />
+        {spotlight === null && (
+          <ListCountries values={showCountries} showDetails={search} />
         )}
+        <Country country={spotlight} />
       </div>
     </div>
   );
