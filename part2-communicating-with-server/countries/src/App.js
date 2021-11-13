@@ -3,7 +3,7 @@ import { Search } from './components/Search';
 import { isSubstring } from './utils';
 import { ListCountries } from './components/List';
 import axios from 'axios';
-import { Country } from './components/Countries';
+import { Country } from './components/Country';
 
 const App = () => {
   const [search, setSearch] = useState('');
@@ -66,7 +66,7 @@ const App = () => {
         {spotlight === null && (
           <ListCountries values={showCountries} showDetails={search} />
         )}
-        <Country country={spotlight} />
+        {spotlight !== null && <Country country={spotlight} />}
       </div>
     </div>
   );
