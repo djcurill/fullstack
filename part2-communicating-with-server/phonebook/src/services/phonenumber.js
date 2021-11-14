@@ -19,7 +19,10 @@ const remove = (contact) => {
 const update = (contact) => {
   return axios
     .put(`${baseUrl}/${contact.id}`, contact)
-    .then((response) => response.data);
+    .then((response) => response.data)
+    .catch((err) => {
+      throw new Error(`Unable to update information for: ${contact.name}`);
+    });
 };
 
 const phoneService = { getAll, create, remove, update };
