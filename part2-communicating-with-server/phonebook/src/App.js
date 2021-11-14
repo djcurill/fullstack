@@ -1,25 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { isSubstring } from './utils';
-import axios from 'axios';
+import phoneService from './services/phonenumber';
 
-const PhoneNumbers = ({ persons }) => {
-  return (
-    <ul>
-      {persons.map((person) => (
-        <PhoneNumber
-          key={person.id}
-          name={person.name}
-          number={person.number}
-        />
-      ))}
-    </ul>
-  );
-};
-
-const PhoneNumber = ({ id, name, number }) => {
+const PhoneNumber = ({ person, deleteHandle }) => {
   return (
     <li>
-      {name} : {number}
+      {person.name} : {person.number}
+      <button onClick={() => deleteHandle(person)}>Delete</button>
     </li>
   );
 };
@@ -71,22 +58,47 @@ const App = () => {
 
   const addPhoneNumber = (event) => {
     event.preventDefault();
-    if (persons.find((x) => x.name === newName) !== undefined)
-      alert(`${newName} is already added to phonebook`);
-    else
-      setPersons(
-        persons.concat({
-          name: newName,
-          number: newPhoneNumber,
-          id: persons.length + 1,
+
+    const existingContact = persons.find((p) => p.name === newName);
+
+    if (existingContact) {
+      if (
+        window.confirm(
+          `Do you wish to update ${existingContact.name} contact info?`
+        )
+      ) {
+        const updatePerson = { ...existingContact, number: newPhoneNumber };
+        console.log(updatePerson);
+        phoneService.update(updatePerson).then((response) => {
+          setPersons(persons.map((p) => (p.id === response.id ? response : p)));
+        });
+      }
+    } else {
+      const newPerson = {
+        name: newName,
+        number: newPhoneNumber,
+      };
+      phoneService
+        .create(newPerson)
+        .then((response) => {
+          setPersons(persons.concat(response));
         })
-      );
+        .catch((err) => console.log(err));
+    }
+  };
+
+  const deletePerson = (removePerson) => {
+    if (window.confirm(`Delete ${removePerson.name}?`)) {
+      phoneService.remove(removePerson).then((deletedContact) => {
+        setPersons(persons.filter((p) => p.id !== removePerson.id));
+      });
+    }
   };
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons').then((response) => {
-      setPersons(persons.concat(response.data));
-    });
+    phoneService
+      .getAll()
+      .then((phonenumbers) => setPersons(persons.concat(phonenumbers)));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -105,7 +117,13 @@ const App = () => {
         handlePhoneNumber={handleNewPhoneNumber}
       />
       <h2>Phone Numbers</h2>
-      <PhoneNumbers persons={personsToShow} />
+      <ul>
+        {personsToShow.map((person, i) => {
+          return (
+            <PhoneNumber person={person} key={i} deleteHandle={deletePerson} />
+          );
+        })}
+      </ul>
     </div>
   );
 };
