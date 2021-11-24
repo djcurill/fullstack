@@ -85,6 +85,12 @@ const App = () => {
           setTimeout(() => {
             setSuccessMessage(null);
           }, FIVE_SECONDS);
+        })
+        .catch((err) => {
+          setErrorMessage(err.message);
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, FIVE_SECONDS);
         });
     }
   };

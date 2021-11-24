@@ -1,13 +1,20 @@
 import axios from 'axios';
 
-const baseUrl = 'http://localhost:3001/persons';
+const baseUrl = '/api/persons';
 
 const getAll = () => {
-  return axios.get(baseUrl).then((response) => response.data);
+  return axios.get(baseUrl).then((response) => {
+    return response.data;
+  });
 };
 
 const create = (contact) => {
-  return axios.post(baseUrl, contact).then((response) => response.data);
+  return axios
+    .post(baseUrl, contact)
+    .then((response) => response.data)
+    .catch((err) => {
+      throw new Error(err.response.data.error);
+    });
 };
 
 const remove = (contact) => {
